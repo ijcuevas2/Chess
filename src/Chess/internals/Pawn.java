@@ -11,7 +11,7 @@ public class Pawn extends Piece {
     }
 
     public boolean firstTurnBonus(int x_displacement, int y_displacement){
-        return (y_displacement == 2) && Game.firstTurn() && (x_displacement == 0);
+        return (y_displacement == 2) && BoardManagement.firstTurn() && (x_displacement == 0);
     }
     /**
      * @param source_y
@@ -20,7 +20,7 @@ public class Pawn extends Piece {
      * moves down or a black pawn moves up.
      */
     public boolean PawnChecks(int source_x, int source_y, int dest_x, int dest_y){
-        int sign = (Game.whiteTurn() ? 1 : - 1);
+        int sign = (BoardManagement.whiteTurn() ? 1 : - 1);
         if(sign > 0 && (dest_y - source_y) < 0)
             return false;
         if(sign < 0 && (dest_y - source_y) > 0)
@@ -62,7 +62,7 @@ public class Pawn extends Piece {
         /* TODO: Insert test to check if this will fail with own piece */
         if(XCoorDifference == 1 && YCoorDifference == 1){
             /* Edit this to take King into account. */
-            if(Game.isOccupied(dest_x, dest_y))
+            if(BoardManagement.isOccupied(dest_x, dest_y))
                 return true;
             return false;
         }

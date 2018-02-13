@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jboss:jboss:3.2.3" type="repository">
+    <properties maven-id="jboss:jboss:3.2.3" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/jboss/jboss/3.2.3/jboss-3.2.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

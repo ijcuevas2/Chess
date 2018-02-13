@@ -2,7 +2,7 @@ package Chess.internals;
 
 public class Kermit extends Rook{
     public Kermit(){
-        super(Game.currentTurn());
+        super(BoardManagement.currentTurn());
     }
 
     public boolean movement(int source_x, int source_y, int dest_x, int dest_y){
@@ -13,7 +13,7 @@ public class Kermit extends Rook{
         boolean moveInYDirection = YCoorDifference > 0;
 
         if(XCoorDifference == 1 && YCoorDifference == 1){
-             if(Game.isOccupied(dest_x, dest_y))
+             if(BoardManagement.isOccupied(dest_x, dest_y))
                  return true;
         }
 

@@ -29,7 +29,7 @@ public class Rook extends Piece {
         while(!reachedDestination(source_x, source_y, dest_x, dest_y)){
             //MoveInXDirection
             System.out.println("in Pieces");
-            if(Game.isOccupied(source_x, source_y) && !firstTurn)
+            if(BoardManagement.isOccupied(source_x, source_y) && !firstTurn)
                 return false;
             moveRookInDirection(source_x, source_y, dest_x, dest_y, moveInXDirection);
             firstTurn = true;

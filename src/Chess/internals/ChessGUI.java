@@ -4,8 +4,10 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.border.*;
-import java.net.URL;
+import java.io.File;
 import javax.imageio.ImageIO;
+//import javax.swing.event.ChangeEvent;
+//import javax.swing.event.ChangeListener;
 import java.util.Collections;
 import java.util.Arrays;
 
@@ -24,17 +26,19 @@ public class ChessGUI {
     private Image[][] chessPieceImages = new Image[2][6];
 
     private JPanel chessBoard;
-    private final JLabel message = new JLabel(
-            "Chess");
+    private final JLabel message = new JLabel("Chess");
 
     private static final String COLS = "ABCDEFGH";
     /*Save piece constants in an array*/
     public static final int QUEEN = 0, KING = 1,
             ROOK = 2, KNIGHT = 3, BISHOP = 4, PAWN = 5;
+    public static final int BLACK = 0, WHITE = 1;
     public static final int[] STARTING_ROW = {
             ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK
     };
-    public static final int BLACK = 0, WHITE = 1;
+
+    public static final int ROOK_POSL = 0, KNIGHT_POSL = 1, BISHOP_POSL = 2,
+    QUEEN_POS = 3, KING_POS = 4, BISHOP_POSR = 5, KNIGHT_POSR = 6, ROOK_POSR = 7;
 
 
     public final void initializeGui() {
@@ -54,12 +58,11 @@ public class ChessGUI {
 
         /*Adds Game Buttons*/
         tools.add(newGameAction);
-        // tools.add(new JButton("Undo"));
+        tools.add(new JButton("Undo"));
         tools.addSeparator();
         tools.add(message);
 
         gui.add(new JLabel("?"), BorderLayout.LINE_START);
-
         chessBoard = new JPanel(new GridLayout(0, 9)); /* {
 
             @Override
@@ -83,14 +86,16 @@ public class ChessGUI {
                 return new Dimension(s,s);
             }
         };*/
+
         chessBoard.setBorder(new CompoundBorder(
                 new EmptyBorder(8, 8, 8, 8),
                 new LineBorder(Color.BLACK)
         ));
-        //Color ochre = new Color(204,119,34);
+
         chessBoard.setBackground(Color.GRAY);
         JPanel boardConstrain = new JPanel(new GridBagLayout());
         boardConstrain.setBackground(Color.GRAY);
+        // boardConstrain.setBackground(Color.RED);
         boardConstrain.add(chessBoard);
         gui.add(boardConstrain);
 
@@ -99,15 +104,26 @@ public class ChessGUI {
             for (int jj = 0; jj < chessBoardSquares[ii].length; jj++) {
                 JButton b = new JButton();
                 b.setMargin(buttonMargin);
-                ImageIcon icon = new ImageIcon(
-                        new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB));
+                b.setRolloverEnabled(true);
+                ImageIcon icon = new ImageIcon(new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB));
                 b.setIcon(icon);
-                if ((jj % 2 == 1 && ii % 2 == 1)
-                        || (jj % 2 == 0 && ii % 2 == 0)) {
-                    b.setBackground(Color.WHITE);
-                } else {
-                    b.setBackground(Color.LIGHT_GRAY);
-                }
+                b.setName("Empty");
+                // if ((jj % 2 == 1 && ii % 2 == 1)
+                //         || (jj % 2 == 0 && ii % 2 == 0)) {
+                //     b.setBackground(Color.WHITE);
+                // } else {
+                //     b.setBackground(Color.LIGHT_GRAY);
+                // }
+                b.setBackground(Color.BLUE);
+                b.getModel().addChangeListener(e -> {
+                    ButtonModel model = (ButtonModel) e.getSource();
+                    if(model.isRollover()){
+                        b.setOpaque(true);
+                        System.out.println(b.getName());
+                    } else{
+                        b.setOpaque(false);
+                    }
+                });
                 chessBoardSquares[jj][ii] = b;
             }
         }
@@ -144,8 +160,8 @@ public class ChessGUI {
 
     private final void createImages() {
         try {
-            URL url = new URL("http://svn.symfony-project.com/plugins/dmChessPlugin/web/images/piece/sprite.png");
-            BufferedImage bi = ImageIO.read(url);
+            File file = new File("src/Chess/internals/assets/sprite.png");
+            BufferedImage bi = ImageIO.read(file);
             for (int ii = 0; ii < 2; ii++) {
                 for (int jj = 0; jj < 6; jj++) {
                     chessPieceImages[ii][jj] = bi.getSubimage(
@@ -163,39 +179,74 @@ public class ChessGUI {
     /* Initializes the icons of the initial chess board piece places */
     private final void setupNewGame() {
         for (int ii = 0; ii < STARTING_ROW.length; ii++) {
-            chessBoardSquares[ii][0].setIcon(new ImageIcon(
-                    chessPieceImages[BLACK][STARTING_ROW[ii]]));
+            chessBoardSquares[ii][0].setIcon(new ImageIcon(chessPieceImages[BLACK][STARTING_ROW[ii]]));
+            switch (ii){
+                case ROOK_POSL:
+                case ROOK_POSR:
+                    chessBoardSquares[ii][0].setName("Rk");
+                    break;
+                case KNIGHT_POSL:
+                case KNIGHT_POSR:
+                    chessBoardSquares[ii][0].setName("Kt");
+                    break;
+                case BISHOP_POSL:
+                case BISHOP_POSR:
+                    chessBoardSquares[ii][0].setName("Bp");
+                    break;
+                case KING_POS:
+                    chessBoardSquares[ii][0].setName("Kg");
+                    break;
+                case QUEEN_POS:
+                    chessBoardSquares[ii][0].setName("Qn");
+                    break;
+            }
         }
         for (int ii = 0; ii < STARTING_ROW.length; ii++) {
-            chessBoardSquares[ii][1].setIcon(new ImageIcon(
-                    chessPieceImages[BLACK][PAWN]));
+            chessBoardSquares[ii][1].setIcon(new ImageIcon(chessPieceImages[BLACK][PAWN]));
+            chessBoardSquares[ii][1].setName("Pn");
         }
         for (int ii = 0; ii < STARTING_ROW.length; ii++) {
             chessBoardSquares[ii][6].setIcon(new ImageIcon(chessPieceImages[WHITE][PAWN]));
+            chessBoardSquares[ii][6].setName("Pn");
         }
         for (int ii = 0; ii < STARTING_ROW.length; ii++) {
-            chessBoardSquares[ii][7].setIcon(new ImageIcon(
-                    chessPieceImages[WHITE][STARTING_ROW[ii]]));
+            chessBoardSquares[ii][7].setIcon(new ImageIcon(chessPieceImages[WHITE][STARTING_ROW[ii]]));
+            switch (ii){
+                case ROOK_POSL:
+                case ROOK_POSR:
+                    chessBoardSquares[ii][7].setName("Rk");
+                    break;
+                case KNIGHT_POSL:
+                case KNIGHT_POSR:
+                    chessBoardSquares[ii][7].setName("Kt");
+                    break;
+                case BISHOP_POSL:
+                case BISHOP_POSR:
+                    chessBoardSquares[ii][7].setName("Bp");
+                    break;
+                case KING_POS:
+                    chessBoardSquares[ii][7].setName("Kg");
+                    break;
+                case QUEEN_POS:
+                    chessBoardSquares[ii][7].setName("Qn");
+                    break;
+            }
         }
     }
 
     public static void main(String[] args) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                ChessGUI cg = new ChessGUI();
-                JFrame f = new JFrame("Chess");
-                f.add(cg.getGui());
-                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                f.setLocationByPlatform(true);
+        Runnable r = () -> {
+            ChessGUI cg = new ChessGUI();
+            JFrame f = new JFrame("Chess");
+            f.add(cg.getGui());
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setLocationByPlatform(true);
 
-                f.pack();
-                f.setMinimumSize(f.getSize());
-                f.setVisible(true);
-            }
+            f.pack();
+            f.setMinimumSize(f.getSize());
+            f.setVisible(true);
         };
         SwingUtilities.invokeLater(r);
     }
 }
-
 

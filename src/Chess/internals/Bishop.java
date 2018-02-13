@@ -30,7 +30,7 @@ public class Bishop extends Piece {
         int start_y = moveBishop(source_y, dest_y);
 
         while(!reachedDestination(start_x, start_y, dest_x, dest_y)){
-            if(Game.isOccupied(start_x, start_y))
+            if(BoardManagement.isOccupied(start_x, start_y))
                 return false;
             /* If the start_x < dest_x: increment
              * else decrement

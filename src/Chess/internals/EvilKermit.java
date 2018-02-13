@@ -5,7 +5,7 @@ package Chess.internals;
  */
 public class EvilKermit extends Piece{
     public EvilKermit(){
-        super(Game.currentTurn());
+        super(BoardManagement.currentTurn());
     }
 
     @Override
